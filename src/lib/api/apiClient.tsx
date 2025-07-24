@@ -1,7 +1,6 @@
 import axios from 'axios'
 import {tokenStorage} from '../utils/tokenStorage'
-import {authService} from './authService'
-
+import {refreshToken} from './auth'
 const baseUrl = 'http://localhost:8080/api'
 
 export const apiClient = axios.create({
@@ -32,7 +31,7 @@ apiClient.interceptors.response.use(
       originalRequest._retry = true
 
       try {
-        await authService.refreshToken()
+        await refreshToken()
         // Retry the original request with new token
         return apiClient(originalRequest)
       } catch (refreshError) {

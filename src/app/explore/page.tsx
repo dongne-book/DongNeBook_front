@@ -2,53 +2,50 @@
 
 import DiaryCard from '@/components/custom/search/DiaryCard'
 import TopBar from '@/components/custom/search/TopBar'
+import {getAllPostsPaginated} from '@/lib/api/post'
+import {PostResponseDetailDTO} from '@/lib/interface/post'
 import {useRouter} from 'next/navigation'
-
-const results = [
-  {
-    title: 'Example Result 1',
-    content: 'This is an example search result.',
-    imageUrl: 'https://placehold.co/600x400',
-    createdAt: '2023-10-01',
-    createdBy: 'User1'
-  },
-  {
-    title: 'Example Result 2',
-    content: 'This is another example search result.',
-    imageUrl: 'https://placehold.co/600x400',
-    createdAt: '2023-10-02',
-    createdBy: 'User2'
-  },
-  {
-    title: 'Example Result 3',
-    content: 'This is yet another example search result.',
-    imageUrl: 'https://placehold.co/600x400',
-    createdAt: '2023-10-03',
-    createdBy: 'User3'
-  }
-]
+import {useEffect, useState} from 'react'
 
 const Page = () => {
   const router = useRouter()
+  const [posts, setPosts] = useState<PostResponseDetailDTO[]>([])
 
   const handleSearchClick = () => {
     router.push('/search')
   }
 
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const data = await getAllPostsPaginated({
+          page: 0,
+          size: 10,
+          sortBy: 'createdAt',
+          sortDir: 'desc'
+        })
+        setPosts(data.content) // Assuming the API returns a paginated response with a 'content' field
+      } catch (error) {
+        console.error('Error fetching posts:', error)
+      }
+    }
+    fetchPosts()
+  }, [])
+
   return (
     <div className="min-h-screen --color-background">
       <TopBar onSearchClick={handleSearchClick} />
       <div className="py-4">
-        {results.length > 0 ? (
+        {posts.length > 0 ? (
           <div>
-            {results.map((result, index) => (
+            {posts.map((post, index) => (
               <DiaryCard
                 key={index}
-                title={result.title}
-                content={result.content}
-                imageUrl={result.imageUrl}
-                createdAt={result.createdAt}
-                createdBy={result.createdBy}
+                title={'asdf'}
+                content={post.content}
+                imageUrl={post.imageUrl}
+                createdAt={post.createdAt}
+                createdBy={post.createdBy.nickname}
               />
             ))}
           </div>

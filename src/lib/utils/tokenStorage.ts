@@ -1,117 +1,76 @@
-// Platform-specific storage interfaces
+// Token storage utilities for web environment
 interface TokenStorage {
-  getItem(key: string): Promise<string | null>
-  setItem(key: string, value: string): Promise<void>
-  removeItem(key: string): Promise<void>
+  getItem(key: string): string | null
+  setItem(key: string, value: string): void
+  removeItem(key: string): void
 }
 
 // Web storage implementation
 const webStorage: TokenStorage = {
-  async getItem(key: string): Promise<string | null> {
+  getItem(key: string): string | null {
     if (typeof window === 'undefined') return null
-    return localStorage.getItem(key)
+    try {
+      return localStorage.getItem(key)
+    } catch (error) {
+      console.error('Error accessing localStorage:', error)
+      return null
+    }
   },
 
-  async setItem(key: string, value: string): Promise<void> {
+  setItem(key: string, value: string): void {
     if (typeof window === 'undefined') return
-    localStorage.setItem(key, value)
+    try {
+      localStorage.setItem(key, value)
+    } catch (error) {
+      console.error('Error setting localStorage:', error)
+    }
   },
 
-  async removeItem(key: string): Promise<void> {
+  removeItem(key: string): void {
     if (typeof window === 'undefined') return
-    localStorage.removeItem(key)
-  }
-}
-
-// Mobile storage implementation (AsyncStorage)
-let mobileStorage: TokenStorage | null = null
-
-// Function to get Platform dynamically
-const getPlatform = () => {
-  try {
-    return require('react-native').Platform
-  } catch {
-    return null
-  }
-}
-
-// Initialize mobile storage if available
-const initializeMobileStorage = () => {
-  try {
-    const AsyncStorage = require('@react-native-async-storage/async-storage').default
-    return {
-      async getItem(key: string): Promise<string | null> {
-        return await AsyncStorage.getItem(key)
-      },
-
-      async setItem(key: string, value: string): Promise<void> {
-        await AsyncStorage.setItem(key, value)
-      },
-
-      async removeItem(key: string): Promise<void> {
-        await AsyncStorage.removeItem(key)
-      }
+    try {
+      localStorage.removeItem(key)
+    } catch (error) {
+      console.error('Error removing from localStorage:', error)
     }
-  } catch (error) {
-    return null
   }
-}
-
-// Unified storage selector
-const getStorage = (): TokenStorage => {
-  const Platform = getPlatform()
-
-  // Check if we're in React Native environment
-  if (Platform && Platform.OS !== 'web') {
-    if (!mobileStorage) {
-      mobileStorage = initializeMobileStorage()
-    }
-    return mobileStorage || webStorage
-  }
-  return webStorage
 }
 
 // Token management utilities
 export const tokenStorage = {
-  async getToken(): Promise<string | null> {
-    const storage = getStorage()
-    return await storage.getItem('auth_token')
+  getToken(): string | null {
+    return webStorage.getItem('auth_token')
   },
 
-  async setToken(token: string): Promise<void> {
-    const storage = getStorage()
-    await storage.setItem('auth_token', token)
+  setToken(token: string): void {
+    webStorage.setItem('auth_token', token)
   },
 
-  async removeToken(): Promise<void> {
-    const storage = getStorage()
-    await storage.removeItem('auth_token')
+  removeToken(): void {
+    webStorage.removeItem('auth_token')
   },
 
-  async getRefreshToken(): Promise<string | null> {
-    const storage = getStorage()
-    return await storage.getItem('refresh_token')
+  getRefreshToken(): string | null {
+    return webStorage.getItem('refresh_token')
   },
 
-  async setRefreshToken(token: string): Promise<void> {
-    const storage = getStorage()
-    await storage.setItem('refresh_token', token)
+  setRefreshToken(token: string): void {
+    webStorage.setItem('refresh_token', token)
   },
 
-  async removeRefreshToken(): Promise<void> {
-    const storage = getStorage()
-    await storage.removeItem('refresh_token')
+  removeRefreshToken(): void {
+    webStorage.removeItem('refresh_token')
   },
 
-  async clearAll(): Promise<void> {
-    await this.removeToken()
-    await this.removeRefreshToken()
+  clearAll(): void {
+    this.removeToken()
+    this.removeRefreshToken()
+  },
+
+  isAuthenticated(): boolean {
+    return this.getToken() !== null
   }
 }
 
-// Detect platform utility
-export const isWeb = typeof window !== 'undefined'
-export const isMobile = (() => {
-  const Platform = getPlatform()
-  return Platform && Platform.OS !== 'web'
-})()
+// Utility to check if we're in browser environment
+export const isBrowser = typeof window !== 'undefined'
