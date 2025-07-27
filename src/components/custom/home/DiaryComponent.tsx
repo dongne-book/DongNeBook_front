@@ -1,7 +1,20 @@
-import {Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar'
-import {Card} from '@/components/ui/card'
+import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { Card } from '@/components/ui/card';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { DiaryResponseDTO } from '@/lib/api/interfaces/diary';
 
 export function DiaryComponent() {
+  const [data, setData] = useState<DiaryResponseDTO | null>(null);
+
+  useEffect(() => {
+    axios.get('/api/diaries')
+      .then((res) => setData(res.data[0]))
+      .catch((err) => console.error('다이어리 불러오기 실패:', err));
+  }, []);
+
+  if (!data) return <p className="text-center text-gray-400">불러오는 중...</p>;
+
   return (
     <Card className="w-full max-w-md mx-auto h-full p-4 bg-white shadow-lg rounded-lg">
       <div className="flex items-center justify-center w-full h-full flex-col gap-4">
@@ -11,8 +24,7 @@ export function DiaryComponent() {
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <div className="flex w-full flex-col items-start">
-            <span className="text-lg font-semibold">사용자명</span>
-            <span className="text-sm text-gray-500">위치</span>
+            <span className="text-sm text-gray-500">{data.region}</span>
           </div>
         </div>
 
@@ -23,13 +35,10 @@ export function DiaryComponent() {
         />
 
         <div className="w-full h-full flex items-start justify-center flex-col gap-2">
-          <span className="text-gray-600 text-sm">지영이 약속 가는 날..!</span>
-          <span className="text-gray-600 text-sm">
-            오늘은 내가 약속 가는 날이다. 근데 더워서 그런지 귀찮다. 나는 얼떨결에 프팀이
-            되었다. 나의 우크라이나는 누굴까..
-          </span>
+          <span className="text-gray-600 text-sm">{data.title}</span>
+          <span className="text-gray-600 text-sm">{data.content}</span>
         </div>
       </div>
     </Card>
-  )
+  );
 }
