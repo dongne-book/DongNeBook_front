@@ -11,7 +11,7 @@ export default function NavBar() {
       <Link href="/home" className={pathname === '/home' ? 'text-primaryC' : ''}>
         <Home />
       </Link>
-      <Link href="/search" className={pathname === '/search' ? 'text-primaryC' : ''}>
+      <Link href="/explore" className={pathname === '/explore' ? 'text-primaryC' : ''}>
         <Search />
       </Link>
       <Link href="/map" className={pathname === '/map' ? 'text-primaryC' : ''}>
