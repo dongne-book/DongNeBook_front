@@ -23,10 +23,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body className="flex flex-col h-full w-full min-h-screen">
-        {children}
-      </body>
+    <html lang="en" className="flex flex-col items-center w-full min-h-screen">
+      <body className="flex h-full w-full min-h-screen max-w-[390px]">{children}</body>
     </html>
   )
 }
