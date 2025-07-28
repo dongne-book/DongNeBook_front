@@ -1,6 +1,7 @@
 import type {Metadata} from 'next'
 import {Geist, Geist_Mono} from 'next/font/google'
 import './globals.css'
+import NavBar from '@/components/tools/navBar'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -23,8 +24,13 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="flex flex-col items-center w-full min-h-screen">
-      <body className="flex h-full w-full min-h-screen max-w-[390px]">{children}</body>
+    <html
+      lang="en"
+      className="flex flex-col items-center w-full min-h-screen bg-gray-300">
+      <body className="flex h-full w-full min-h-screen max-w-[400px] ">
+        <NavBar />
+        <div className="flex w-full h-full bg-primaryC mb-[65.84px]">{children}</div>
+      </body>
     </html>
   )
 }

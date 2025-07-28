@@ -4,13 +4,11 @@ import {PostViewComponent} from '@/components/custom/home/PostViewComponent'
 
 export default function Home() {
   return (
-    <div className="flex items-center justify-center w-full min-h-screen bg-primaryC flex-col p-4 gap-10 overflow-y-auto overscroll-y-auto">
-      {/* <span>Hello World</span> */}
-      {/* . */}
+    <div className="flex flex-col items-center w-full min-h-screen gap-10 p-4 overflow-y-auto overscroll-y-auto">
       <PampletCarousel />
       <DiaryComponent />
       <div className="flex flex-col items-center justify-center w-full max-w-2xl gap-4">
-        <span className="text-2xl font-semibold text-white w-full">오늘의 한 컷</span>
+        <span className="w-full text-2xl font-semibold text-white">오늘의 한 컷</span>
         <PostViewComponent />
       </div>
     </div>
