@@ -1,18 +1,16 @@
-import {CardDemo} from '@/components/custom/map/map'
-import {Map} from 'react-kakao-maps-sdk'
-const mayKey = process.env.KAKAO_MAP_KEY
+
+import {DiaryComponent} from '@/components/custom/home/DiaryComponent'
+import {PampletCarousel} from '@/components/custom/home/PampletCarousel'
+import {PostViewComponent} from '@/components/custom/home/PostViewComponent'
+
 export default function Home() {
   return (
-    <div className="flex items-center justify-center w-full h-full">
-      <div id="map" style={{width: '1000px', height: '600px'}}>
-        <script
-          type="text/javascript"
-          src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${mayKey}`}></script>
-        <Map
-          center={{lat: 33.450701, lng: 126.570667}}
-          style={{width: '1000px', height: '600px'}}
-          level={3}
-        />
+    <div className="flex flex-col items-center w-full min-h-screen gap-10 p-4 overflow-y-auto overscroll-y-auto">
+      <PampletCarousel />
+      <DiaryComponent />
+      <div className="flex flex-col items-center justify-center w-full max-w-2xl gap-4">
+        <span className="w-full text-2xl font-semibold text-white">오늘의 한 컷</span>
+        <PostViewComponent />
       </div>
     </div>
   )
